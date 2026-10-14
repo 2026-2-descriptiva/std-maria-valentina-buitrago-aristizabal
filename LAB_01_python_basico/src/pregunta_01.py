@@ -1,3 +1,4 @@
+import gzip
 def pregunta_01():
     """
     Calcule la suma de los valores de la segunda columna (`value`) del
@@ -7,5 +8,9 @@ def pregunta_01():
 
         214
     """
+    with gzip.open("data/data.csv.gz", "rt", encoding="utf-8") as file:
+        total_sum = sum(int(line.split("\t")[1]) for line in file)
+
+    return total_sum 
 
     raise NotImplementedError
