@@ -1,3 +1,4 @@
+-- Active: 1713302703529@@127.0.0.1@3306@mysql
 --
 --  La base de datos tiene tres tablas:
 --
@@ -20,4 +21,5 @@
 --  0  15137.63
 --
 --  Escriba su consulta debajo de esta línea.
---
+
+  SELECT SUM(c12) FROM tbl1;

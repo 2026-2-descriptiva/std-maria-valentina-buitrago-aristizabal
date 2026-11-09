@@ -26,4 +26,4 @@
 --  5  A  10  816.51  600  2019-04-25  0.40  DAGC
 --
 --  Escriba su consulta debajo de esta línea.
---
+SELECT * FROM tbl1 WHERE K0 = 'A' ORDER BY c14;

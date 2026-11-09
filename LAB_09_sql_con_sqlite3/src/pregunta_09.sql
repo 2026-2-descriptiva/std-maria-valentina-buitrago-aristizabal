@@ -20,4 +20,4 @@
 --  0  29  101.11  100  2017-11-17  0.42  MV-CB
 --
 --  Escriba su consulta debajo de esta línea.
---
+SELECT * FROM tbl2 ORDER BY c21 LIMIT 1;

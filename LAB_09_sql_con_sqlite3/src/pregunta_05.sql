@@ -23,4 +23,4 @@
 --  3  G  5000  100  NLPLO  0.2
 --
 --  Escriba su consulta debajo de esta línea.
---
+SELECT * FROM tbl0 WHERE c02 IN (100, 600);

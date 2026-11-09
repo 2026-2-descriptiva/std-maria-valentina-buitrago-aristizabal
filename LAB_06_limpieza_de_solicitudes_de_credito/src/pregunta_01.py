@@ -1,3 +1,8 @@
+import os
+
+import pandas as pd
+
+
 def pregunta_01():
     """
     El archivo `data/solicitudes_de_credito.csv.gz` contiene las solicitudes de
@@ -34,4 +39,61 @@ def pregunta_01():
         ...
     """
 
-    raise NotImplementedError
+    df = pd.read_csv(
+        "data/solicitudes_de_credito.csv.gz",
+        sep=";",
+        index_col=0,  # la primera columna es un índice que no pertenece a los datos
+    )
+
+    # 1. Campos de texto: minúsculas, "_" y "-" como espacios, sin espacios sobrantes
+    columnas_texto = [
+        "sexo",
+        "tipo_de_emprendimiento",
+        "idea_negocio",
+        "barrio",
+        "línea_credito",
+    ]
+    for columna in columnas_texto:
+        df[columna] = (
+            df[columna]
+            .str.lower()
+            .str.replace("_", " ", regex=False)
+            .str.replace("-", " ", regex=False)
+            .str.split()
+            .str.join(" ")
+        )
+
+    # 2. Estrato como entero (por ejemplo "02" -> 2)
+    df["estrato"] = df["estrato"].astype(int)
+
+    # 3. Monto: quitar "$", separadores de miles, espacios y decimales ".00"
+    df["monto_del_credito"] = (
+        df["monto_del_credito"]
+        .astype(str)
+        .str.strip()
+        .str.replace("$", "", regex=False)
+        .str.replace(",", "", regex=False)
+        .str.replace(" ", "", regex=False)
+        .str.replace(r"\.00$", "", regex=True)
+        .astype(float)
+        .astype(int)
+    )
+
+    # 4. Fechas: vienen como DD/MM/AAAA o AAAA/MM/DD; se unifican en AAAA-MM-DD
+    fechas = pd.to_datetime(
+        df["fecha_de_beneficio"], format="%d/%m/%Y", errors="coerce"
+    )
+    fechas = fechas.fillna(
+        pd.to_datetime(df["fecha_de_beneficio"], format="%Y/%m/%d", errors="coerce")
+    )
+    df["fecha_de_beneficio"] = fechas.dt.strftime("%Y-%m-%d")
+
+    # 5. Registros incompletos (se conservan los faltantes de comuna_ciudadano)
+    columnas_obligatorias = [c for c in df.columns if c != "comuna_ciudadano"]
+    df = df.dropna(subset=columnas_obligatorias)
+
+    # 6. Duplicados (después de normalizar, para detectar los que se veían distintos)
+    df = df.drop_duplicates()
+
+    os.makedirs("submission", exist_ok=True)
+    df.to_csv("submission/solicitudes_de_credito.csv", sep=";", index=False)

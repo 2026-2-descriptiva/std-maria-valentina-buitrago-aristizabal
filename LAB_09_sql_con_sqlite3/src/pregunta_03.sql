@@ -25,4 +25,4 @@
 --  4  E  14  832.44  800  2016-11-22  0.39  EGFD
 --
 --  Escriba su consulta debajo de esta línea.
---
+SELECT * FROM tbl1 ORDER BY c14 LIMIT 5;
